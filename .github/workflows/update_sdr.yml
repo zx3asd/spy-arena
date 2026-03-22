@@ -18,11 +18,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 1. Жестко скачиваем актуальное состояние веток
+          # Жестко синхронизируемся с сервером
           git fetch origin main
           git reset --hard origin/main
           
-          # 2. Создаем файл sdr.html прямо здесь
+          # Генерируем свежий sdr.html
           echo '<!DOCTYPE html><html><head>' > sdr.html
           echo '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">' >> sdr.html
           echo '<meta http-equiv="Pragma" content="no-cache">' >> sdr.html
@@ -32,12 +32,11 @@ jobs:
           
           git add sdr.html
           
-          # 3. Если IP не изменился - просто выходим
+          # Проверяем, изменился ли IP. Если нет — не спамим коммитами
           if git diff --quiet && git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
           
-          # 4. Сохраняем и пушим с силой, если нужно
           git commit -m "Auto-update SDR IP"
           git push origin main --force
