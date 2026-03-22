@@ -13,7 +13,12 @@ jobs:
       
       - name: Rewrite sdr.html
         run: |
-          echo '<meta http-equiv="refresh" content="0; url=steam://run/440//+connect ${{ github.event.client_payload.ip }}/">' > sdr.html
+          echo '<!DOCTYPE html><html><head>' > sdr.html
+          echo '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">' >> sdr.html
+          echo '<meta http-equiv="Pragma" content="no-cache">' >> sdr.html
+          echo '<meta http-equiv="Expires" content="0">' >> sdr.html
+          echo '<meta http-equiv="refresh" content="0; url=steam://run/440//+connect ${{ github.event.client_payload.ip }}/">' >> sdr.html
+          echo '</head><body></body></html>' >> sdr.html
           
       - name: Commit and Push
         run: |
