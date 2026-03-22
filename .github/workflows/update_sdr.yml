@@ -10,7 +10,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-      
+        with:
+          fetch-depth: 0 # Скачиваем всю историю, чтобы избежать конфликтов при пуше
+
       - name: Rewrite sdr.html
         run: |
           echo '<!DOCTYPE html><html><head>' > sdr.html
@@ -25,12 +27,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add sdr.html
-          # Если изменений нет — просто выходим
+          
+          # Если изменений нет — просто выходим без ошибки
           if git diff --quiet && git diff --staged --quiet; then
             echo "No changes to commit"
-          else
-            git commit -m "Auto-update SDR IP"
-            # Сначала скачиваем свежие данные и "подкладываем" под свой коммит
-            git pull --rebase origin main
-            git push origin main
+            exit 0
           fi
+          
+          git commit -m "Auto-update SDR IP"
+          
+          # Пытаемся отправить. Если кто-то успел раньше — скачиваем изменения и пробуем снова
+          git pull --rebase origin main
+          git push origin main
