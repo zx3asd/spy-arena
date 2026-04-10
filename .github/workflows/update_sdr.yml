@@ -1,4 +1,9 @@
 name: Update SDR Redirect
+
+concurrency:
+  group: update-ip
+  cancel-in-progress: true
+  
 on:
   repository_dispatch:
     types: [update_server_ip]
